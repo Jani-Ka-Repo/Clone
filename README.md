@@ -146,5 +146,5 @@ Press `Ctrl+C` when you're done with editing env and `:wq` to save the env<br>
 - <b> _sᴩᴇᴄɪᴀʟ ᴛʜᴀɴᴋs ᴛᴏ Sparrow For [Core Development](https://MAHI-BEATS)
 - <br>_sᴩᴇᴄɪᴀʟ ᴛʜᴀɴᴋs ᴛᴏ  Rehanna For [Youtube Proxy](https://github.com/gr8rehanna) 
 - <br>_Maintainer  [Ami](https://github.com/shivashish44)
-- <br>__sᴩᴇᴄɪᴀʟ ᴛʜᴀɴᴋs ᴛᴏ Team istkhar and SHIV for base repository ♥️.
+- <br>__sᴩᴇᴄɪᴀʟ ᴛʜᴀɴᴋs ᴛᴏ Team Jani Bots repository ♥️.
 
