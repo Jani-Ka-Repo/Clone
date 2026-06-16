@@ -6,7 +6,7 @@ from logging import getLogger
 
 from config import BANNED_USERS, LOGGER_ID
 from OraMusic import app, LOGGER as BOT_LOGGER
-from OraMusic.utils.database import get_welcome
+from OraMusic.utils.database import get_welcome, set_welcome, remove_welcome
 from OraMusic.utils.decorators import AdminActual
 
 LOGGER = getLogger(__name__)
