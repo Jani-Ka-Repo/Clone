@@ -100,9 +100,9 @@ def stream_markup_timer(_, chat_id, played, dur):
 def stream_markup(_, chat_id):
     buttons = [
         [
-            styled_button(text="𝐏𝐚𝐮𝐬𝐞", callback_data=f"ADMIN Pause|{chat_id}", style=ButtonStyle.DANGER),
-            styled_button(text="𝐑𝐞𝐬𝐮𝐦𝐞", callback_data=f"ADMIN Resume|{chat_id}", style=ButtonStyle.SUCCESS),
-            styled_button(text="𝐒𝐤𝐢𝐩", callback_data=f"ADMIN Skip|{chat_id}", style=ButtonStyle.PRIMARY),
+          #  styled_button(text="𝐏𝐚𝐮𝐬𝐞", callback_data=f"ADMIN Pause|{chat_id}", style=ButtonStyle.DANGER),
+           # styled_button(text="𝐑𝐞𝐬𝐮𝐦𝐞", callback_data=f"ADMIN Resume|{chat_id}", style=ButtonStyle.SUCCESS),
+          #  styled_button(text="𝐒𝐤𝐢𝐩", callback_data=f"ADMIN Skip|{chat_id}", style=ButtonStyle.PRIMARY),
         ],
         [
             styled_button(text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ 𝐍ᴏɴꜱᴛᴏᴘ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY)
