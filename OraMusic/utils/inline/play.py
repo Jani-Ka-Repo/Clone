@@ -86,7 +86,7 @@ def stream_markup_timer(_, chat_id, played, dur):
     ),
         ]
         [
-            styled_button(text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY)
+            styled_button(text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ 𝐍ᴏɴꜱᴛᴏᴘ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY)
         ],
         [clone_button()],
         [
@@ -105,7 +105,7 @@ def stream_markup(_, chat_id):
             styled_button(text="𝐒𝐤𝐢𝐩", callback_data=f"ADMIN Skip|{chat_id}", style=ButtonStyle.PRIMARY),
         ],
         [
-            styled_button(text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY)
+            styled_button(text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ 𝐍ᴏɴꜱᴛᴏᴘ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY)
         ],
         [clone_button()],
         [
@@ -153,7 +153,7 @@ def livestream_markup(_, videoid, user_id, mode, channel, fplay):
             ),
         ],
         [
-            styled_button(text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY)
+            styled_button(text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ 𝐍ᴏɴꜱᴛᴏᴘ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY)
         ],
         [clone_button()],
         [
@@ -249,7 +249,7 @@ def queue_markup(_, videoid, chat_id):
                 text="ʀᴇᴘʟᴀʏ ↺", callback_data=f"ADMIN Replay|{chat_id}", style=ButtonStyle.PRIMARY
             ),
             styled_button(
-                text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY
+                text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ 𝐍ᴏɴꜱᴛᴏᴘ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY
             ),
         ],
         [clone_button()],
@@ -279,7 +279,7 @@ def stream_markup2(_, chat_id):
             styled_button(text="𝐒𝐤𝐢𝐩", callback_data=f"ADMIN Skip|{chat_id}", style=ButtonStyle.PRIMARY),
         ],
         [
-            styled_button(text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY)
+            styled_button(text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ 𝐍ᴏɴꜱᴛᴏᴘ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY)
         ],
         [clone_button()],
         [
@@ -312,7 +312,7 @@ def stream_markup_timer2(_, chat_id, played, dur):
             styled_button(text="𝐒𝐤𝐢𝐩", callback_data=f"ADMIN Skip|{chat_id}", style=ButtonStyle.PRIMARY),
         ],
         [
-            styled_button(text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY)
+            styled_button(text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ 𝐍ᴏɴꜱᴛᴏᴘ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY)
         ],
         [clone_button()],
         [
@@ -339,7 +339,7 @@ def panel_markup_1(_, videoid, chat_id):
                 style=ButtonStyle.PRIMARY
             ),
             styled_button(text="ʟᴏᴏᴘ ↺", callback_data=f"ADMIN Loop|{chat_id}", style=ButtonStyle.PRIMARY),
-            styled_button(text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY),
+            styled_button(text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ 𝐍ᴏɴꜱᴛᴏᴘ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY),
         ],
         [
             styled_button(
@@ -442,7 +442,7 @@ def panel_markup_5(_, videoid, chat_id):
                 text="ʀᴇᴘʟᴀʏ", callback_data=f"ADMIN Replay|{chat_id}", style=ButtonStyle.PRIMARY
             ),
             styled_button(
-                text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY
+                text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ 𝐍ᴏɴꜱᴛᴏᴘ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY
             ),
         ],
         [clone_button()],
@@ -536,7 +536,7 @@ def panel_markup_4(_, vidid, chat_id, played, dur):
                 text="▷ ʀᴇsᴜᴍᴇ", callback_data=f"ADMIN Resume|{chat_id}", style=ButtonStyle.SUCCESS
             ),
             styled_button(
-                text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY
+                text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ 𝐍ᴏɴꜱᴛᴏᴘ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY
             ),
         ],
         [clone_button()],
@@ -574,12 +574,12 @@ def panel_markup_clone(_, vidid, chat_id, played, dur):
         ],
         [
             InlineKeyboardButton(text="<- 20s", callback_data=f"ADMIN SeekBack|{chat_id}"),
-            InlineKeyboardButton(text="🔁", callback_data=f"ADMIN Loop|{chat_id}"),
-            InlineKeyboardButton(text="🔀", callback_data=f"ADMIN Shuffle|{chat_id}"),
+            InlineKeyboardButton(text="⋉", callback_data=f"ADMIN Loop|{chat_id}"),
+            InlineKeyboardButton(text="⋊", callback_data=f"ADMIN Shuffle|{chat_id}"),
             InlineKeyboardButton(text="20s + ->", callback_data=f"ADMIN SeekForward|{chat_id}"),
         ],
         [
-            styled_button(text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY)
+            styled_button(text="❖ 𝐀ᴜᴛᴏ𝐏ʟᴀʏ 𝐍ᴏɴꜱᴛᴏᴘ ❖", callback_data=f"ADMIN Autoplay|{chat_id}", style=ButtonStyle.PRIMARY)
         ],
         [clone_button()],
         [
