@@ -53,13 +53,13 @@ FOOTER = (
     "\n\n━━━━━━━━━━━━━━━━━━\n"
     "✨ **Start customizing your bot now! join **\n"
     "📢 Update: @Jani_Ki_Jaanu\n"
-    "🌚 Support: @Power_of_Jani"
+    "🌚 Owner: @Power_of_Jani"
 )
 
 try:
     from config import BOT_LINK
 except ImportError:
-    BOT_LINK = "https://t.me/SizzuMusicBot"
+    BOT_LINK = "https://t.me/Oramusicbot"
 
 C_BOT_COMMANDS = [
     {"command": "/clone", "description": "ᴄʟᴏɴᴇs ʏᴏᴜʀ ᴏᴡɴ ᴍᴜsɪᴄ ʙᴏᴛ"},
