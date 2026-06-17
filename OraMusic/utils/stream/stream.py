@@ -80,7 +80,7 @@ async def stream(
             if not forceplay: db[chat_id] = []
             await Lucky.join_call(chat_id, original_chat_id, file_path, video=status, image=thumbnail)
             await put_queue(chat_id, original_chat_id, file_path if direct else f"vid_{vidid}", title, duration_min, user_name, vidid, user_id, "video" if video else "audio", forceplay=forceplay)
-            img = await get_thumb(vidid, user_id, app)
+            img = await get_thumb(vidid, user_id)
             if not img: img = get_random_img(config.PLAYLIST_IMG_URL)
             run = await app.send_photo(original_chat_id, photo=img, caption=_["stream_1"].format(f"https://t.me/{app.username}?start=info_{vidid}", title[:23], duration_min, user_name), reply_markup=InlineKeyboardMarkup(stream_markup(_, chat_id)), has_spoiler=False)
             
