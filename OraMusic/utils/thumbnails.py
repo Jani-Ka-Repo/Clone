@@ -1,148 +1,136 @@
-import os
-import re
-import random
-import aiofiles
-import aiohttp
-import math
-from PIL import (Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont, ImageOps)
-# Nayi library yahan update kar di gayi hai 👇
+import os, aiofiles, aiohttp
+from PIL import Image, ImageDraw, ImageEnhance, ImageFilter, ImageFont
 from youtubesearchpython.__future__ import VideosSearch
+from config import YOUTUBE_IMG_URL
 from OraMusic import app
 
-# --- HELPER FUNCTIONS ---
-def get_glowing_circle(image):
-    img = image.convert("RGBA")
-    size = min(img.size)
-    img = ImageOps.fit(img, (size, size), centering=(0.5, 0.5))
-    mask = Image.new("L", (size, size), 0)
-    ImageDraw.Draw(mask).ellipse((0, 0, size, size), fill=255)
-    circular_img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-    circular_img.paste(img, (0, 0), mask)
-    offset = 50
-    glow_size = size + (offset * 2)
-    glow = Image.new("RGBA", (glow_size, glow_size), (0, 0, 0, 0))
-    draw_glow = ImageDraw.Draw(glow)
-    draw_glow.ellipse((5, 5, glow_size-5, glow_size-5), fill=(255, 255, 0, 60))
-    draw_glow.ellipse((15, 15, glow_size-15, glow_size-15), fill=(255, 255, 255, 80))
-    draw_glow.ellipse((25, 25, glow_size-25, glow_size-25), fill=(255, 105, 180, 150))
-    draw_glow.ellipse((35, 35, glow_size-35, glow_size-35), fill=(255, 255, 255, 200))
-    glow = glow.filter(ImageFilter.GaussianBlur(15))
-    draw_border = ImageDraw.Draw(glow)
-    draw_border.ellipse((offset - 4, offset - 4, size + offset + 4, size + offset + 4), outline="white", width=8)
-    glow.paste(circular_img, (offset, offset), circular_img)
-    return glow, offset
+CACHE_DIR = "cache"
+os.makedirs(CACHE_DIR, exist_ok=True)
 
-def draw_text_with_glow(draw, position, text, font, fill, glow_fill):
-    x, y = position
-    for dx, dy in [(-3, 0), (3, 0), (0, -3), (0, 3)]:
-        draw.text((x + dx, y + dy), text, font=font, fill=glow_fill)
-    draw.text((x, y), text, font=font, fill=fill)
+def trim_to_width(text: str, font: ImageFont.FreeTypeFont, max_width: int) -> str:
+    ellipsis = "..."
+    if font.getlength(text) <= max_width:
+        return text
+    for i in range(len(text), 0, -1):
+        new = text[:i] + ellipsis
+        if font.getlength(new) <= max_width:
+            return new
+    return ellipsis
 
-async def download_user_photo(user_id):
-    try:
-        async for photo in app.get_chat_photos(user_id, limit=1):
-            return await app.download_media(photo.file_id, file_name=f"cache/{user_id}.jpg")
-    except: return None
-    return None
+async def get_thumb(videoid: str, player_username: str = None) -> str:
+    if player_username is None:
+        player_username = app.username
 
-# --- MAIN THUMBNAIL FUNCTION ---
-async def get_thumb(videoid, user_id, user_name):
-    os.makedirs("cache", exist_ok=True)
-    final_path = f"cache/{videoid}_{user_id}.png"
-    if os.path.exists(final_path): return final_path
+    cache_path = os.path.join(CACHE_DIR, f"{videoid}_shashank.png")
+    if os.path.exists(cache_path):
+        return cache_path
 
     try:
         results = VideosSearch(f"https://www.youtube.com/watch?v={videoid}", limit=1)
-        data = await results.next()
-        result = data["result"][0]
-        title = re.sub(r"\W+", " ", result["title"]).title()
-        duration = result.get("duration", "00:00")
-        views = result.get("viewCount", {}).get("short", "Unknown")
-        channel = result.get("channel", {}).get("name", "Unknown Artist")
-        
-        async with aiohttp.ClientSession() as session:
-            async with session.get(result["thumbnails"][0]["url"].split("?")[0]) as resp:
-                f = await aiofiles.open(f"cache/temp_{videoid}.jpg", mode="wb")
-                await f.write(await resp.read())
-                await f.close()
+        search_result = await results.next()
+        data = search_result.get("result", [])[0]
 
-        bg = Image.open(f"cache/temp_{videoid}.jpg").convert("RGBA").resize((1920, 1080))
-        background = bg.filter(ImageFilter.GaussianBlur(25)).point(lambda p: p * 0.35)
-        
-        black_card = Image.new("RGBA", background.size, (0, 0, 0, 0))
-        draw_card = ImageDraw.Draw(black_card)
-        draw_card.rounded_rectangle((40, 40, 1880, 940), radius=60, fill=(0, 0, 0, 255), outline=(132, 224, 240, 200), width=6)
-        background = Image.alpha_composite(background, black_card)
-        draw = ImageDraw.Draw(background, "RGBA")
-        
-        try:
-            f1 = ImageFont.truetype("OraMusic/assets/font.ttf", 65)
-            f2 = ImageFont.truetype("OraMusic/assets/font2.ttf", 45)
-            br = ImageFont.truetype("OraMusic/assets/font2.ttf", 55)
-            f_small = ImageFont.truetype("OraMusic/assets/font2.ttf", 30)
-        except:
-            f1 = f2 = br = f_small = ImageFont.load_default()
+        title = data.get("title", "Unknown Title")
+        artist = data.get("channel", {}).get("name", "Unknown Artist")
+        duration = data.get("duration", "00:00")
+        views = data.get("viewCount", {}).get("short", "0 views")
+        thumbnail = data.get("thumbnails", [{}])[0].get("url", YOUTUBE_IMG_URL)
+    except Exception:
+        title = "Unknown Title"
+        artist = "Unknown Artist"
+        duration = "05:00"
+        views = "1M views"
+        thumbnail = YOUTUBE_IMG_URL
 
-        # Images
-        yt_img_glowing, yt_offset = get_glowing_circle(bg.resize((500, 500)))
-        background.paste(yt_img_glowing, (80 - yt_offset, 250 - yt_offset), yt_img_glowing)
-        
-        u_photo = await download_user_photo(user_id)
-        if u_photo:
-            # YAHAN CHANGE KIYA HAI: Blur value ko 6 kar diya hai 👇
-            u_img_blurred = Image.open(u_photo).resize((450, 450)).filter(ImageFilter.GaussianBlur(6))
-            u_img_glowing, u_offset = get_glowing_circle(u_img_blurred)
-            background.paste(u_img_glowing, (1350 - u_offset, 250 - u_offset), u_img_glowing)
+    thumb_path = os.path.join(CACHE_DIR, f"raw_{videoid}.jpg")
+    try:
+        async with aiohttp.ClientSession() as s:
+            async with s.get(thumbnail) as r:
+                if r.status == 200:
+                    async with aiofiles.open(thumb_path, "wb") as f:
+                        await f.write(await r.read())
+    except:
+        return YOUTUBE_IMG_URL
 
-        # Texts
-        draw.text((650, 300), (title[:22] + "...") if len(title) > 22 else title, fill="white", font=f1)
-        draw.text((650, 400), f"Artist: {channel}", fill=(200, 200, 200), font=f2)
-        draw.text((650, 470), f"Views: {views}", fill=(150, 150, 150), font=f2)
-        draw.text((650, 530), f"Duration: {duration}", fill=(150, 150, 150), font=f2)
+    W, H = 1280, 720
+    img = Image.open(thumb_path).convert("RGBA")
+    bg = img.resize((W, H))
+    bg = bg.filter(ImageFilter.GaussianBlur(radius=40))
+    enhancer = ImageEnhance.Brightness(bg)
+    bg = enhancer.enhance(0.4) # Darken background
 
-        # --- UNIFORM DYNAMIC WAVEFORM ---
-        bar_count = 64; bar_width = 5; bar_gap = 12
-        total_width = bar_count * bar_gap
-        # Waveform thoda upar kiya (780 se 760 kiya)
-        start_x = (1920 - total_width) / 2; base_y = 760 
-        
-        # Har video ka wave alag ho but x-axis par constant/barabar feel de
-        random.seed(videoid) 
-        for i in range(bar_count):
-            h = random.randint(15, 45) # Random heights without the swell shape
-            x0 = start_x + (i * bar_gap); x1 = x0 + bar_width
-            y0 = base_y - h; y1 = base_y + h
-            fill_color = (255, 255, 255, 255) if i < (bar_count // 2) else (150, 150, 150, 200)
-            if x1 > x0: draw.rounded_rectangle((x0, y0, x1, y1), radius=3, fill=fill_color)
+    draw = ImageDraw.Draw(bg)
 
-        # --- PROGRESS LINE & ICONS (Shifted Upwards) ---
-        line_y = base_y + 55 # Pehle +80 tha, ab thoda upar kiya
-        draw.line([(start_x, line_y), (start_x + total_width, line_y)], fill=(80, 80, 80), width=1)
-        draw.line([(start_x, line_y), (start_x + (total_width // 2), line_y)], fill=(255, 255, 255), width=2)
-        draw.ellipse(((start_x + total_width // 2) - 8, line_y - 8, (start_x + total_width // 2) + 8, line_y + 8), fill="white")
-        draw.text((start_x, line_y + 20), "00:00", fill="white", font=f_small)
-        draw.text((start_x + total_width - 80, line_y + 20), duration, fill="white", font=f_small)
+    try:
+        font_bold = "OraMusic/assets/font2.ttf"
+        font_med = "OraMusic/assets/font.ttf"
+        title_font = ImageFont.truetype(font_bold, 60)
+        artist_font = ImageFont.truetype(font_med, 40)
+        time_font = ImageFont.truetype(font_med, 32)
+    except:
+        title_font = artist_font = time_font = ImageFont.load_default()
 
-        ctrl_y = line_y + 50 # Pehle +60 tha, play icons ko bhi aur upar kiya
-        mid_x = 960
-        
-        # Play / Pause Icon
-        draw.ellipse((mid_x - 30, ctrl_y - 30, mid_x + 30, ctrl_y + 30), outline="white", width=3)
-        draw.polygon([(mid_x - 8, ctrl_y - 12), (mid_x + 14, ctrl_y), (mid_x - 8, ctrl_y + 12)], fill="white")
-        
-        # Previous / Next Icons
-        draw.ellipse((mid_x - 80, ctrl_y - 20, mid_x - 45, ctrl_y + 20), outline="white", width=2)
-        draw.ellipse((mid_x + 45, ctrl_y - 20, mid_x + 80, ctrl_y + 20), outline="white", width=2)
+    frame_w, frame_h = 450, 450
+    frame_x, frame_y = 100, (H - frame_h) // 2 
 
-        # Branding
-        draw_text_with_glow(draw, (80, 975), "@Jani_Ki_Jaanu", br, (132, 224, 240), (0, 255, 255, 100))
-        draw_text_with_glow(draw, (1480, 975), "JANI BOTS", br, (255, 60, 160), (255, 0, 170, 100))
+    album = img.resize((frame_w, frame_h), Image.LANCZOS)
+    
+    mask = Image.new("L", (frame_w, frame_h), 0)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, frame_w, frame_h), radius=40, fill=255)
+    
+    glow = Image.new("RGBA", (frame_w + 40, frame_h + 40), (0, 0, 0, 0))
+    ImageDraw.Draw(glow).rounded_rectangle((20, 20, frame_w + 20, frame_h + 20), radius=40, fill=(0, 0, 0, 150))
+    glow = glow.filter(ImageFilter.GaussianBlur(radius=15))
+    bg.paste(glow, (frame_x - 20, frame_y - 20), glow)
 
-        background.convert("RGB").save(final_path, "PNG")
-        return final_path
-    except Exception as e:
-        print(f"Thumbnail Error: {e}")
-        return None
-    finally:
-        if os.path.exists(f"cache/temp_{videoid}.jpg"): os.remove(f"cache/temp_{videoid}.jpg")
-        if 'u_photo' in locals() and u_photo and os.path.exists(u_photo): os.remove(u_photo)
+    bg.paste(album, (frame_x, frame_y), mask)
+
+    draw.rounded_rectangle(
+        (frame_x, frame_y, frame_x + frame_w, frame_y + frame_h), 
+        radius=40, 
+        outline=(255, 255, 255, 80), 
+        width=6
+    )
+
+    text_x = 620
+    glass_rect = [text_x - 40, frame_y, W - 60, frame_y + frame_h]
+    overlay = Image.new('RGBA', (W, H), (0,0,0,0))
+    d_overlay = ImageDraw.Draw(overlay)
+    d_overlay.rounded_rectangle(glass_rect, radius=30, fill=(255, 255, 255, 25)) # Very faint white
+    bg.alpha_composite(overlay)
+
+    clean_title = trim_to_width(title, title_font, 600)
+    draw.text((text_x, frame_y + 40), clean_title, font=title_font, fill=(255, 255, 255, 255))
+    
+    clean_artist = trim_to_width(f"By {artist}", artist_font, 550)
+    draw.text((text_x, frame_y + 120), clean_artist, font=artist_font, fill=(200, 200, 200, 230))
+
+    draw.text((text_x, frame_y + 190), f"Views: {views}", font=time_font, fill=(180, 180, 180, 200))
+
+    bar_width = 500
+    bar_height = 8
+    bar_x_pos = text_x
+    bar_y_pos = frame_y + 320
+
+    draw.rounded_rectangle((bar_x_pos, bar_y_pos, bar_x_pos + bar_width, bar_y_pos + bar_height), radius=4, fill=(255, 255, 255, 50))
+    
+    progress = 0.4
+    draw.rounded_rectangle((bar_x_pos, bar_y_pos, bar_x_pos + (bar_width * progress), bar_y_pos + bar_height), radius=4, fill=(0, 200, 255, 255))
+    
+    circle_r = 10
+    draw.ellipse((bar_x_pos + (bar_width * progress) - circle_r, bar_y_pos + (bar_height/2) - circle_r, 
+                  bar_x_pos + (bar_width * progress) + circle_r, bar_y_pos + (bar_height/2) + circle_r), 
+                  fill=(255, 255, 255, 255))
+
+    draw.text((bar_x_pos, bar_y_pos + 25), "00:25", font=time_font, fill=(255, 255, 255, 200))
+    draw.text((bar_x_pos + bar_width - 80, bar_y_pos + 25), duration, font=time_font, fill=(255, 255, 255, 200))
+
+    bg = bg.convert("RGB")
+    bg.save(cache_path, quality=95)
+    
+    try:
+        os.remove(thumb_path)
+    except:
+        pass
+
+    return cache_path
